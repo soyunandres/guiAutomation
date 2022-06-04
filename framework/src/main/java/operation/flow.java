@@ -77,5 +77,13 @@ public class flow {
     public void findWordAndCreateRegion(String stringCellValue, String stringCellValue1) throws FindFailed {
         TryAndCatch.findWordAndCreateRegion(stringCellValue,stringCellValue1);
     }
+
+    public void findImageAndCreateRegion(String stringCellValue, String stringCellValue1) throws FindFailed {
+        TryAndCatch.findImageAndCreateRegion(stringCellValue,stringCellValue1);
+    }
+
+    public void clickInRegion(String stringCellValue) {
+        TryAndCatch.clickInRegion(stringCellValue);
+    }
 }
 

@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.ImagePath;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import utils.TryAndCatch;
@@ -35,8 +36,10 @@ public class readExcel {
 
     }
 
+
     @Test
     public void framework() throws IOException, InterruptedException, FindFailed {
+        ImagePath.add(System.getProperty("user.dir"));
         //open a file using FileInputStream
         String filePath = "test.xlsx";
         FileInputStream fis = null;
@@ -238,6 +241,24 @@ public class readExcel {
                             String[] stringCellValues = array;
                             System.out.println(stringCellValues[0] + " " + stringCellValues[1]);
                             this.test.findWordAndCreateRegion(stringCellValues[0], stringCellValues[1]);
+                        }
+                        break;
+                        case "FINDIAMGEANDCREATEAREGION":
+                        while (cellIterator.hasNext()) {
+                            Cell cell1 = cellIterator.next();
+                            String[] array = cell1.getStringCellValue().split(",");
+                            String[] stringCellValues = array;
+                            System.out.println(stringCellValues[0] + " " + stringCellValues[1]);
+                            this.test.findImageAndCreateRegion(stringCellValues[0], stringCellValues[1]);
+                        }
+                        break;
+                    case "CLICKINREGION":
+                        while (cellIterator.hasNext()) {
+                            Cell cell1 = cellIterator.next();
+                            String[] array = cell1.getStringCellValue().split(",");
+                            String[] stringCellValues = array;
+                            System.out.println(stringCellValues[0] );
+                            this.test.clickInRegion(stringCellValues[0]);
                         }
                         break;
 
