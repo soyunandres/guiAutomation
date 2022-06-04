@@ -73,5 +73,9 @@ public class flow {
     public void regionHasText(String stringCellValue, String stringCellValue1, int parseInt, int parseInt1) {
         TryAndCatch.regionHasText(stringCellValue,stringCellValue1, parseInt, parseInt1);
     }
+
+    public void findWordAndCreateRegion(String stringCellValue, String stringCellValue1) throws FindFailed {
+        TryAndCatch.findWordAndCreateRegion(stringCellValue,stringCellValue1);
+    }
 }
 

@@ -231,6 +231,16 @@ public class readExcel {
                         }
                         break;
 
+                    case "FINDWORDANDCREATEAREGION":
+                        while (cellIterator.hasNext()) {
+                            Cell cell1 = cellIterator.next();
+                            String[] array = cell1.getStringCellValue().split(",");
+                            String[] stringCellValues = array;
+                            System.out.println(stringCellValues[0] + " " + stringCellValues[1]);
+                            this.test.findWordAndCreateRegion(stringCellValues[0], stringCellValues[1]);
+                        }
+                        break;
+
 
                 }
                 System.out.println();

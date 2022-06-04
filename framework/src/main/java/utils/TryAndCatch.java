@@ -1,7 +1,12 @@
 package utils;
 
+import org.apache.commons.lang3.StringUtils;
+
+import org.apache.commons.text.similarity.LevenshteinDetailedDistance;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.sikuli.script.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -209,16 +214,34 @@ public class TryAndCatch {
 //If text is find in a region, then use an array of string to send actions
     public static boolean ifTypeKeys(Screen screen, String regionName, String text, String[] actions) {
         try {
+
+            System.out.println("text " + regions.get(regionName).text());
             if (regions.get(regionName).text().equals(text)) {
-                //if region contains the text count the number of actions in the array
-                int numberOfActions = actions.length;
-                //for each action in the array send the action
-                for (int i = 0; i < numberOfActions; i++) {
-                    typeKeys(screen, actions[i]);
+                int i = 0;
+                //Create an array separate by "else"
+               while (!(actions[i].equals("else"))) {
+                   typeKeys(screen, actions[i]);
+                   i++;
+               }
+                return true;
+
+               } else {
+                int i = 0;
+                while (!(actions[i].equals("else"))) {
+                    i++;
                 }
-            }else  {
-                System.out.println("Can´t send the typekeys to text");
-            }
+                while (i < actions.length) {
+                    typeKeys(screen, actions[i]);
+                    i++;
+                }
+
+
+               }
+
+
+
+                System.out.println("Can´t send the typekeys to region");
+
             return true;
         } catch (Exception e) {
             return false;
@@ -302,7 +325,11 @@ public class TryAndCatch {
 
             } else if (keys.equals("Key.INSERT")) {
                 screen.type(Key.INSERT);
-            } else {
+
+            } else if (keys.equals("else")) {
+                System.out.println("if then else");
+            }
+            else {
                 screen.type(keys);
             }
 
@@ -357,22 +384,108 @@ public class TryAndCatch {
         }
 
     public static  void findWordAndClick(String regionName, String word) throws FindFailed {
+
         try {
-            regions.get(regionName).highlight(1, "green");
-            System.out.println(regions.get(regionName).findWord(word));
+                regions.get(regionName).findWord(word).getText().equals(word);
+                regions.put(word, regions.get(regionName).findWord(word));
+                regions.get(word).highlight(1,"red").click();
+        } catch (Exception e) {
+                System.out.println("Can´t find the word in the region");
+                System.out.println(regions.get(regionName).text());
+            System.out.println(regions.get(regionName).findWords().size() +  " size");
+                int i = 0;
+                outerloop:
+                while (i < regions.get(regionName).findWords().size()) {
+                    //obtain the word in the region and get the Levenshtein Distance with the word to find
+                    LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+                    int distance = LevenshteinDistance.getDefaultInstance().apply(regions.get(regionName).findWords().get(i).text(), word);
+                    //System.out.println("Distance: " + distance + " Word: " + regions.get(regionName).findWords().get(i).text() + " Word to find: " + word);
+
+
+
+                    //if the word is found in the region
+                    if (distance < 2) {
+                        //click in the word
+                        regions.put(word, regions.get(regionName).findWords().get(i));
+                        //System.out.println("Click in the word: " + regions.get(regionName).text().split(" ")[i]);
+                        System.out.println("Click in the word : " + regions.get(regionName).findWords().get(i).getText());
+                        regions.get(word).highlight(.1, "red").click();
+                        break outerloop;
+                    }
+                    i++;
+                }
+            }
+
+            // while scan if the wotd is found in the region
+
+
+
+
+
+
+
+            /*System.out.println(regions.get(regionName).findWord(word));
             System.out.println(regions.get(regionName).findWords().get(0).getText());
             System.out.println(regions.get(regionName).text());
-            regions.get(regionName).findWord(word).highlight(1,"red");
+            regions.get(regionName).findWord(word).highlight(1,"red");*/
 
-        } catch (Exception e) {
-            System.out.println("Error al buscar el texto");
         }
+    public static  void findWordAndCreateRegion(String regionName, String word) throws FindFailed {
+
+        try {
+            regions.get(regionName).findWord(word).getText().equals(word);
+            regions.put(word, regions.get(regionName).findWord(word));
+            regions.get(word).highlight(1,"red");
+        } catch (Exception e) {
+            System.out.println("Can´t find the word in the region");
+            //System.out.println(regions.get(regionName).text());
+            System.out.println(regions.get(regionName).findWords().size() +  " size");
+            int i = 0;
+            outerloop:
+            while (i < regions.get(regionName).findWords().size()) {
+                //obtain the word in the region and get the Levenshtein Distance with the word to find
+                LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+                int distance = LevenshteinDistance.getDefaultInstance().apply(regions.get(regionName).findWords().get(i).text(), word);
+                //System.out.println("Distance: " + distance + " Word: " + regions.get(regionName).findWords().get(i).text() + " Word to find: " + word);
+
+                //if the word is found in the region
+                if (distance < 2) {
+                    //click in the word
+                    regions.put(word, regions.get(regionName).findWords().get(i));
+                    //System.out.println("Click in the word: " + regions.get(regionName).text().split(" ")[i]);
+                    System.out.println("Click in the word : " + regions.get(regionName).findWords().get(i).getText());
+                    regions.get(word).highlight(2, "red");
+                    break outerloop;
+                }
+                i++;
+            } if (regions.get(word) == null) {
+                regions.put(word, regions.get(regionName)
+                );
+                System.out.println("The word is not found");
+            }
+        }
+
+        // while scan if the wotd is found in the region
+
+
+
+
+
+
+
+            /*System.out.println(regions.get(regionName).findWord(word));
+            System.out.println(regions.get(regionName).findWords().get(0).getText());
+            System.out.println(regions.get(regionName).text());
+            regions.get(regionName).findWord(word).highlight(1,"red");*/
+
+    }
+
 
 
     }
 
 
-}
+
         /* //Press ALT + TAB in loop for focus on the next window and get the name of the window
        public static void  switchApp(Screen screen, String text) throws FindFailed {
             try {
